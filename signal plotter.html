@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js">
+    </script>
+    <title>Signals Plotter Ahmed Abdul-naser Lotfi</title>
+</head>
+
+<body>
+    <div style="margin: auto; text-align:center;  ">
+        <a class="btn-gradient red block">Ahmed Abdul-naser Lotfi</a>
+    </div>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        var data = [];
+        var myChart;
+
+        var degrees = [];
+        var volts = [];
+
+
+        function promptStart() {
+            degrees = [];
+            volts = [];
+            var isWaiting = true;
+            var finished = false;
+            var input;
+            var numberOfPoints = 1;
+
+            while (isWaiting) {
+                var okText = prompt('Please enter the degrees and volts values seperated by a comma ","\n enter OK/ok to start:- ');
+                if (okText.toLowerCase() == 'ok') {
+                    isWaiting = false;
+                }
+            }
+            while (isNaN(input)) {
+
+                input = prompt('Do you mind telling me how many points you have?');
+
+            }
+            numberOfPoints = input;
+            for (let i = 0; i < numberOfPoints; i++) {
+                var ordinalLetter = 'th';
+                switch (i) {
+                    case 0:
+                        ordinalLetter = 'st';
+                        break;
+                    case 1:
+                        ordinalLetter = 'nd';
+                        break;
+                    case 2:
+                        ordinalLetter = 'rd';
+                        break;
+                    default:
+                        ordinalLetter = 'th';
+
+                }
+                var validEntry = true;
+                var entryList;
+                do {
+                    input = prompt('Please enter the ' + (i + 1).toString() + ordinalLetter + ' number');
+                    entryList = input.split(',');
+                    if (entryList.length != 2 || isNaN(entryList[0]) || isNaN(entryList[0])) {
+
+                        validEntry = false;
+
+                    } else {
+                        validEntry = true;
+                    }
+                } while (validEntry == false);
+                degrees.push(parseInt(entryList[0]));
+                volts.push(parseInt(entryList[1]));
+            }
+            data = makeDataList(degrees, volts);
+            startChart();
+
+        }
+
+        function makeDataList(degrees, volts) {
+            let dataLocal = [];
+            for (let i = 0; i < degrees.length; i++) {
+                dataLocal.push({
+                    x: degrees[i],
+                    y: volts[i]
+                });
+            }
+
+            return dataLocal
+
+
+        }
+
+        function startChart() {
+            myChart = new Chart(ctx, {
+                type: 'scatter',
+
+                data: {
+                    datasets: [{
+                        label: 'Scatter Dataset',
+                        data: data,
+                        backgroundColor: 'rgb(255, 99, 132)',
+                    }],
+                },
+                options: {
+                    showLine: true,
+                    elements: {
+                        line: {
+                            tension: 0.4
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+
+    <div style="margin: auto; text-align:center;  ">
+        <a onClick="promptStart()" class="btn-gradient red large">Start Entering Points</a>
+    </div>
+
+
+</body>
+
+</html>
